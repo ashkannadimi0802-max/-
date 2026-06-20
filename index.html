@@ -132,8 +132,8 @@
             let shares = investment / sharePrice;
             let ownership = (shares / totalShares) * 100;
 
-            // محاسبه سود با رشد سالانه
-            let annualProfitBase = (ownership / 100 * totalProfit) / years; // سود پایه سال اول
+            // محاسبه با رشد سالانه
+            let annualProfitBase = (ownership / 100 * totalProfit) / years;
             let cashFlows = [];
             let totalShareProfit = 0;
 
@@ -156,14 +156,27 @@
             let pi = (npv + investment) / investment;
             let payback = investment / cashFlows[0];
 
-            window.lastCalc = {investment, discountRate: discountRate*100, growthRate: growthRate*100, years, shares: shares.toFixed(2), 
-                ownership: ownership.toFixed(0), totalShareProfit, annualProfit: annualProfitAvg, netProfit, 
-                roi: roi.toFixed(1), cagr: cagr.toFixed(1), npv, pi: pi.toFixed(2), payback: payback.toFixed(1)};
+            window.lastCalc = {
+                investment, 
+                discountRate: discountRate*100, 
+                growthRate: growthRate*100, 
+                years, 
+                shares: shares.toFixed(2), 
+                ownership: ownership.toFixed(2),
+                totalShareProfit, 
+                annualProfit: annualProfitAvg, 
+                netProfit, 
+                roi: roi.toFixed(1), 
+                cagr: cagr.toFixed(1), 
+                npv, 
+                pi: pi.toFixed(2), 
+                payback: payback.toFixed(1)
+            };
 
             const resultHTML = `
                 <h2 class="text-3xl font-bold mb-8">نتایج محاسبه</h2>
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">درصد مالکیت</p><p class="text-4xl font-bold text-blue-600">${ownership.toFixed(0)}%</p></div>
+                    <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">درصد مالکیت</p><p class="text-4xl font-bold text-blue-600">${ownership.toFixed(2)}%</p></div>
                     <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">تعداد سهم</p><p class="text-4xl font-bold">${shares.toFixed(2)}</p></div>
                 </div>
 
