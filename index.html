@@ -16,18 +16,23 @@
         body { font-family: 'Vazirmatn', Tahoma, sans-serif; }
         .glass { background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); }
 
-        /* رفع مشکل oklch برای html2canvas */
+        /* رفع مشکل oklch */
         .bg-blue-600 { background-color: #2563eb !important; }
         .text-blue-600 { color: #2563eb !important; }
         .text-emerald-600 { color: #10b981 !important; }
         .text-violet-600 { color: #8b5cf6 !important; }
-        .border-blue-600 { border-color: #2563eb !important; }
 
         .readonly-input {
             background-color: #f8fafc;
             border: 2px solid #e2e8f0;
             pointer-events: none;
             user-select: none;
+        }
+
+        /* جلوگیری از کش آمدن نمودارها */
+        .chart-container {
+            height: 260px;
+            position: relative;
         }
     </style>
 </head>
@@ -130,7 +135,6 @@
                 ownership: ownership.toFixed(2), totalShareProfit, annualProfit, netProfit, 
                 roi: roi.toFixed(2), cagr: cagr.toFixed(2), npv, pi: pi.toFixed(2), payback: payback.toFixed(1)};
 
-            // نمایش نتایج + نمودارها
             const resultHTML = `
                 <h2 class="text-3xl font-bold mb-8">نتایج محاسبه</h2>
                 <div class="grid grid-cols-2 gap-4 mb-8">
@@ -151,21 +155,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <h3 class="text-lg font-semibold mb-3 text-center">گردش نقدی سالانه</h3>
-                        <canvas id="profitChart" width="400" height="200"></canvas>
+                        <div class="chart-container">
+                            <canvas id="profitChart"></canvas>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold mb-3 text-center">سود تجمعی</h3>
-                        <canvas id="cumulativeChart" width="400" height="200"></canvas>
+                        <div class="chart-container">
+                            <canvas id="cumulativeChart"></canvas>
+                        </div>
                     </div>
                 </div>
             `;
 
             document.getElementById("result").innerHTML = resultHTML;
 
-            // رسم نمودارها بعد از رندر شدن DOM
             setTimeout(() => {
                 renderCharts(annualProfit, years);
-            }, 100);
+            }, 150);
 
             document.getElementById("pdfBtn").classList.remove("hidden");
         }
@@ -184,7 +191,7 @@
                         label: 'سود سالانه',
                         data: Array(years).fill(Math.round(annualProfit)),
                         backgroundColor: '#10b981',
-                        borderRadius: 6,
+                        borderRadius: 8,
                     }]
                 },
                 options: {
@@ -207,7 +214,7 @@
                         tension: 0.4,
                         fill: true,
                         borderWidth: 4,
-                        pointRadius: 5
+                        pointRadius: 4
                     }]
                 },
                 options: {
@@ -222,8 +229,6 @@
             if (!window.lastCalc) return alert("ابتدا محاسبه کنید");
 
             const resultDiv = document.getElementById("result");
-            const originalHeight = resultDiv.style.minHeight;
-            resultDiv.style.minHeight = 'auto'; // برای گرفتن بهتر تصویر
 
             try {
                 const canvas = await html2canvas(resultDiv, {
@@ -237,7 +242,6 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
 
-                // هدر
                 doc.setFillColor(37, 99, 235);
                 doc.rect(0, 0, 210, 40, 'F');
                 doc.setTextColor(255);
@@ -246,7 +250,6 @@
                 doc.setFontSize(14);
                 doc.text("گزارش تحلیل سرمایه‌گذاری", 105, 28, { align: "center" });
 
-                // محتوای صفحه
                 const pageWidth = 190;
                 const imgHeight = (canvas.height * pageWidth) / canvas.width;
                 doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', 10, 50, pageWidth, imgHeight);
@@ -255,9 +258,7 @@
                 alert("✅ گزارش PDF با موفقیت دانلود شد");
             } catch (e) {
                 console.error(e);
-                alert("خطا در تولید PDF. لطفاً صفحه را رفرش کنید و دوباره امتحان کنید.");
-            } finally {
-                resultDiv.style.minHeight = originalHeight;
+                alert("خطا در تولید PDF");
             }
         }
 
