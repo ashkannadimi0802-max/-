@@ -15,6 +15,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
         body { font-family: 'Vazirmatn', Tahoma, sans-serif; }
         .glass { background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); }
+
+        /* رفع مشکل oklch برای html2canvas */
+        .bg-blue-600 { background-color: #2563eb !important; }
+        .text-blue-600 { color: #2563eb !important; }
+        .text-emerald-600 { color: #10b981 !important; }
+        .text-violet-600 { color: #8b5cf6 !important; }
+        .border-blue-600 { border-color: #2563eb !important; }
+
         .readonly-input {
             background-color: #f8fafc;
             border: 2px solid #e2e8f0;
@@ -122,8 +130,8 @@
                 ownership: ownership.toFixed(2), totalShareProfit, annualProfit, netProfit, 
                 roi: roi.toFixed(2), cagr: cagr.toFixed(2), npv, pi: pi.toFixed(2), payback: payback.toFixed(1)};
 
-            // ساخت نتایج + دو نمودار زیبا
-            document.getElementById("result").innerHTML = `
+            // نمایش نتایج + نمودارها
+            const resultHTML = `
                 <h2 class="text-3xl font-bold mb-8">نتایج محاسبه</h2>
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">تعداد سهم</p><p class="text-4xl font-bold">${shares.toFixed(1)}</p></div>
@@ -143,48 +151,54 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <h3 class="text-lg font-semibold mb-3 text-center">گردش نقدی سالانه</h3>
-                        <canvas id="profitChart" class="w-full"></canvas>
+                        <canvas id="profitChart" width="400" height="200"></canvas>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold mb-3 text-center">سود تجمعی</h3>
-                        <canvas id="cumulativeChart" class="w-full"></canvas>
+                        <canvas id="cumulativeChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             `;
 
-            // رسم نمودارها
-            renderCharts(annualProfit, years);
+            document.getElementById("result").innerHTML = resultHTML;
+
+            // رسم نمودارها بعد از رندر شدن DOM
+            setTimeout(() => {
+                renderCharts(annualProfit, years);
+            }, 100);
+
             document.getElementById("pdfBtn").classList.remove("hidden");
         }
 
         function renderCharts(annualProfit, years) {
-            // حذف نمودارهای قبلی
             if (profitChart) profitChart.destroy();
             if (cumulativeChart) cumulativeChart.destroy();
 
             const yearsArray = Array.from({length: years}, (_, i) => `سال ${i+1}`);
 
-            // نمودار گردش نقدی
             profitChart = new Chart(document.getElementById('profitChart'), {
                 type: 'bar',
                 data: {
                     labels: yearsArray,
                     datasets: [{
                         label: 'سود سالانه',
-                        data: Array(years).fill(annualProfit),
+                        data: Array(years).fill(Math.round(annualProfit)),
                         backgroundColor: '#10b981',
-                        borderRadius: 8,
+                        borderRadius: 6,
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { display: false } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
             });
 
-            // نمودار سود تجمعی
-            const cumulativeData = Array.from({length: years+1}, (_, i) => annualProfit * i);
+            const cumulativeData = Array.from({length: years + 1}, (_, i) => Math.round(annualProfit * i));
             cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
                 type: 'line',
                 data: {
-                    labels: Array.from({length: years+1}, (_, i) => `سال ${i}`),
+                    labels: Array.from({length: years + 1}, (_, i) => i === 0 ? 'شروع' : `سال ${i}`),
                     datasets: [{
                         label: 'سود تجمعی',
                         data: cumulativeData,
@@ -192,10 +206,15 @@
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         tension: 0.4,
                         fill: true,
-                        borderWidth: 4
+                        borderWidth: 4,
+                        pointRadius: 5
                     }]
                 },
-                options: { responsive: true, plugins: { legend: { display: false } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
             });
         }
 
@@ -203,20 +222,23 @@
             if (!window.lastCalc) return alert("ابتدا محاسبه کنید");
 
             const resultDiv = document.getElementById("result");
-            
+            const originalHeight = resultDiv.style.minHeight;
+            resultDiv.style.minHeight = 'auto'; // برای گرفتن بهتر تصویر
+
             try {
                 const canvas = await html2canvas(resultDiv, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: "#ffffff",
-                    logging: false
+                    logging: false,
+                    allowTaint: true
                 });
 
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF('p', 'mm', 'a4');
 
                 // هدر
-                doc.setFillColor(30, 64, 175);
+                doc.setFillColor(37, 99, 235);
                 doc.rect(0, 0, 210, 40, 'F');
                 doc.setTextColor(255);
                 doc.setFontSize(22);
@@ -224,7 +246,7 @@
                 doc.setFontSize(14);
                 doc.text("گزارش تحلیل سرمایه‌گذاری", 105, 28, { align: "center" });
 
-                // محتوای اصلی
+                // محتوای صفحه
                 const pageWidth = 190;
                 const imgHeight = (canvas.height * pageWidth) / canvas.width;
                 doc.addImage(canvas.toDataURL("image/png", 1.0), 'PNG', 10, 50, pageWidth, imgHeight);
@@ -233,7 +255,9 @@
                 alert("✅ گزارش PDF با موفقیت دانلود شد");
             } catch (e) {
                 console.error(e);
-                alert("خطا در تولید PDF. لطفاً دوباره امتحان کنید.");
+                alert("خطا در تولید PDF. لطفاً صفحه را رفرش کنید و دوباره امتحان کنید.");
+            } finally {
+                resultDiv.style.minHeight = originalHeight;
             }
         }
 
