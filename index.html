@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محاسبه‌گر حرفه‌ای سرمایه‌گذاری | آریا راهبرد نیرو</title>
+    <title>محاسبه‌گر حرفه‌ای | آریا راهبرد نیرو</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.3/jspdf.umd.min.js"></script>
@@ -13,29 +13,19 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-        
-        body {
-            font-family: 'Vazirmatn', 'Tahoma', system-ui, sans-serif;
-        }
-        .glass {
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(20px);
-        }
-        #result * {
-            font-family: 'Vazirmatn', 'Tahoma', sans-serif !important;
-        }
+        body { font-family: 'Vazirmatn', Tahoma, sans-serif; }
+        .glass { background: rgba(255,255,255,0.97); backdrop-filter: blur(20px); }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen py-8">
     <div class="max-w-5xl mx-auto px-4">
-        <!-- Header -->
         <div class="flex items-center justify-between mb-10">
             <div class="flex items-center gap-4">
-                <img id="logo" src="https://i.ibb.co.com/your-logo-link" 
-                     alt="لوگوی آریا راهبرد نیرو" class="w-20 h-20 object-contain">
+                <img id="logo" src="https://i.ibb.co.com/..." 
+                     alt="لوگو" class="w-20 h-20 object-contain">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">آریا راهبرد نیرو</h1>
-                    <p class="text-slate-600 -mt-1">طرح بهینه‌سازی روشنایی</p>
+                    <p class="text-slate-600">طرح بهینه‌سازی روشنایی</p>
                 </div>
             </div>
         </div>
@@ -43,34 +33,23 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
             <div class="lg:col-span-2">
                 <div class="glass rounded-3xl shadow-2xl p-8 sticky top-6">
-                    <h2 class="text-2xl font-semibold mb-6 text-slate-800">محاسبه سود سرمایه‌گذاری</h2>
-                    
+                    <h2 class="text-2xl font-semibold mb-6">محاسبه سود سرمایه‌گذاری</h2>
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1.5">مبلغ سرمایه‌گذاری (تومان)</label>
-                            <input id="investment" type="number" value="50000000000" 
-                                   class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
+                            <input id="investment" type="number" value="50000000000" class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1.5">نرخ تنزیل (%)</label>
-                            <input id="discount" type="number" value="30" 
-                                   class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
+                            <input id="discount" type="number" value="30" class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1.5">مدت پروژه (سال)</label>
-                            <input id="years" type="number" value="7" 
-                                   class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
+                            <input id="years" type="number" value="7" class="w-full rounded-2xl px-6 py-4 border border-slate-200 focus:border-blue-600 outline-none text-lg">
                         </div>
 
-                        <button onclick="calculate()" 
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 rounded-2xl text-lg transition-all">
-                            محاسبه
-                        </button>
-
-                        <button onclick="generatePDF()" id="pdfBtn" 
-                                class="w-full hidden border-2 border-slate-300 hover:bg-slate-50 py-4 rounded-2xl font-medium text-slate-700 text-lg">
-                            📄 دانلود گزارش PDF
-                        </button>
+                        <button onclick="calculate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 rounded-2xl text-lg">محاسبه</button>
+                        <button onclick="generatePDF()" id="pdfBtn" class="w-full hidden border-2 border-slate-300 hover:bg-slate-50 py-4 rounded-2xl font-medium text-lg">📄 دانلود گزارش PDF</button>
                     </div>
                 </div>
             </div>
@@ -82,19 +61,11 @@
     </div>
 
     <script>
-        async function loadFonts() {
-            await document.fonts.load('400 1em Vazirmatn');
-            await document.fonts.load('500 1em Vazirmatn');
-            await document.fonts.load('700 1em Vazirmatn');
-        }
-
         function formatNumber(num) {
             return Math.round(num).toLocaleString('fa-IR');
         }
 
-        async function calculate() {
-            await loadFonts();
-            
+        function calculate() {
             const totalProject = 2500000000000;
             const totalShares = 1000;
             const totalProfit = 17500000000000;
@@ -103,7 +74,7 @@
             let discountRate = Number(document.getElementById("discount").value) / 100 || 0.3;
             let years = Number(document.getElementById("years").value) || 7;
 
-            if (investment <= 0 || years <= 0) return alert("لطفاً مقادیر معتبر وارد کنید");
+            if (investment <= 0 || years <= 0) return alert("مقادیر را درست وارد کنید");
 
             let sharePrice = totalProject / totalShares;
             let shares = investment / sharePrice;
@@ -115,129 +86,120 @@
             let cagr = (Math.pow(totalShareProfit / investment, 1 / years) - 1) * 100;
 
             let npv = -investment;
-            for (let t = 1; t <= years; t++) {
-                npv += annualProfit / Math.pow(1 + discountRate, t);
-            }
+            for (let t = 1; t <= years; t++) npv += annualProfit / Math.pow(1 + discountRate, t);
 
             let pi = (npv + investment) / investment;
             let payback = investment / annualProfit;
 
-            window.lastCalc = { investment, discountRate: discountRate*100, years, shares: shares.toFixed(1),
-                ownership: ownership.toFixed(2), totalShareProfit, annualProfit, netProfit,
-                roi: roi.toFixed(2), cagr: cagr.toFixed(2), npv, pi: pi.toFixed(2), payback: payback.toFixed(1)
-            };
+            window.lastCalc = {investment, discountRate: discountRate*100, years, shares: shares.toFixed(1), ownership: ownership.toFixed(2),
+                totalShareProfit, annualProfit, netProfit, roi: roi.toFixed(2), cagr: cagr.toFixed(2), npv, pi: pi.toFixed(2), payback: payback.toFixed(1)};
 
-            const html = `
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-3xl font-bold text-slate-800">نتایج محاسبه</h2>
-                    <img id="logo-result" src="${document.getElementById('logo').src}" class="w-14 h-14">
-                </div>
+            document.getElementById("result").innerHTML = `
+                <h2 class="text-3xl font-bold mb-8">نتایج محاسبه</h2>
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-white rounded-2xl p-6 shadow"><p class="text-slate-500 text-sm">تعداد سهم</p><p class="text-4xl font-bold">${shares.toFixed(1)}</p></div>
-                    <div class="bg-white rounded-2xl p-6 shadow"><p class="text-slate-500 text-sm">درصد مالکیت</p><p class="text-4xl font-bold text-blue-600">${ownership.toFixed(2)}%</p></div>
+                    <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">تعداد سهم</p><p class="text-4xl font-bold">${shares.toFixed(1)}</p></div>
+                    <div class="bg-white p-6 rounded-2xl"><p class="text-slate-500">مالکیت</p><p class="text-4xl font-bold text-blue-600">${ownership.toFixed(2)}%</p></div>
                 </div>
-                <div class="space-y-6 text-lg">
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">سهم از سود کل پروژه</span><span class="font-bold">${formatNumber(totalShareProfit)} تومان</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">سود سالانه</span><span class="font-bold">${formatNumber(annualProfit)} تومان</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">سود خالص</span><span class="font-bold text-emerald-600">${formatNumber(netProfit)} تومان</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">ROI</span><span class="font-bold">${roi}%</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">CAGR</span><span class="font-bold">${cagr}%</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">NPV</span><span class="font-bold text-violet-600">${formatNumber(npv)} تومان</span></div>
-                    <div class="flex justify-between py-4 border-b"><span class="text-slate-600">شاخص سودآوری (PI)</span><span class="font-bold">${pi}</span></div>
-                    <div class="flex justify-between py-4"><span class="text-slate-600">دوره بازگشت سرمایه</span><span class="font-bold">${payback} سال</span></div>
+                <div class="space-y-5 text-lg">
+                    <div class="flex justify-between py-3 border-b"><span>سهم سود کل</span><span class="font-bold">${formatNumber(totalShareProfit)} تومان</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>سود سالانه</span><span class="font-bold">${formatNumber(annualProfit)} تومان</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>سود خالص</span><span class="font-bold text-emerald-600">${formatNumber(netProfit)} تومان</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>ROI</span><span class="font-bold">${roi}%</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>CAGR</span><span class="font-bold">${cagr}%</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>NPV</span><span class="font-bold text-violet-600">${formatNumber(npv)} تومان</span></div>
+                    <div class="flex justify-between py-3 border-b"><span>PI</span><span class="font-bold">${pi}</span></div>
+                    <div class="flex justify-between py-3"><span>دوره بازگشت</span><span class="font-bold">${payback} سال</span></div>
                 </div>
             `;
-
-            document.getElementById("result").innerHTML = html;
             document.getElementById("pdfBtn").classList.remove("hidden");
         }
 
         async function generatePDF() {
             if (!window.lastCalc) return alert("ابتدا محاسبه کنید");
 
-            await loadFonts(); // اطمینان از لود فونت
-
             const resultDiv = document.getElementById("result");
             
-            const canvas = await html2canvas(resultDiv, {
-                scale: 3,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: "#ffffff",
-                logging: false,
-                fontFamily: 'Vazirmatn'
-            });
+            try {
+                const canvas = await html2canvas(resultDiv, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: "#ffffff",
+                    logging: false
+                });
 
-            const imgData = canvas.toDataURL('image/png', 1.0);
+                const imgData = canvas.toDataURL("image/png", 1.0);
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
 
-            // Header
-            doc.setFillColor(30, 64, 175);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
-            doc.text("آریا راهبرد نیرو", 105, 18, { align: "center" });
-            doc.setFontSize(14);
-            doc.text("گزارش تحلیل سرمایه‌گذاری", 105, 28, { align: "center" });
+                // Header
+                doc.setFillColor(30, 64, 175);
+                doc.rect(0, 0, 210, 40, 'F');
+                doc.setTextColor(255);
+                doc.setFontSize(20);
+                doc.text("آریا راهبرد نیرو", 105, 18, { align: "center" });
+                doc.setFontSize(13);
+                doc.text("گزارش سرمایه‌گذاری", 105, 27, { align: "center" });
 
-            doc.addImage(document.getElementById('logo').src, 'PNG', 15, 8, 28, 28);
+                // Content
+                const pageWidth = 190;
+                const imgHeight = (canvas.height * pageWidth) / canvas.width;
+                doc.addImage(imgData, 'PNG', 10, 50, pageWidth, imgHeight);
 
-            // Main content
-            const imgHeight = (canvas.height * 190) / canvas.width;
-            doc.addImage(imgData, 'PNG', 10, 48, 190, imgHeight);
+                // Charts page
+                doc.addPage();
+                doc.setTextColor(0);
+                doc.setFontSize(16);
+                doc.text("نمودارهای تحلیل مالی", 105, 25, { align: "center" });
 
-            // Second page - Charts
-            doc.addPage();
-            doc.setFontSize(16);
-            doc.text("نمودارهای مالی", 105, 20, { align: "center" });
+                let y = 45;
+                doc.text("گردش نقدی", 20, y); y += 12;
+                drawChart(doc, window.lastCalc, 20, y, 170, 70);
 
-            let y = 40;
-            doc.text("گردش نقدی (Cash Flow)", 20, y); y += 15;
-            drawSimpleChart(doc, window.lastCalc, 20, y, 170, 65);
+                y += 90;
+                doc.text("سود تجمعی", 20, y); y += 12;
+                drawCumulative(doc, window.lastCalc, 20, y, 170, 70);
 
-            y += 85;
-            doc.text("سود تجمعی", 20, y); y += 15;
-            drawCumulativeChart(doc, window.lastCalc, 20, y, 170, 65);
+                doc.save(`گزارش_آریا_راهبرد_${new Date().toISOString().slice(0,10)}.pdf`);
+                alert("گزارش با موفقیت دانلود شد ✅");
 
-            doc.setFontSize(10);
-            doc.text("تولید شده توسط ماشین حساب آریا راهبرد نیرو - " + new Date().toLocaleDateString('fa-IR'), 105, 285, { align: "center" });
-
-            doc.save(`گزارش_سرمایه_گذاری_${new Date().toISOString().slice(0,10)}.pdf`);
+            } catch (e) {
+                console.error(e);
+                alert("خطا در تولید PDF: " + e.message);
+            }
         }
 
-        function drawSimpleChart(doc, data, x, y, w, h) {
+        function drawChart(doc, data, x, y, w, h) {
             doc.rect(x, y, w, h);
-            const annual = data.annualProfit / 1e9;
+            const val = data.annualProfit / 1000000000;
             for (let i = 0; i < data.years; i++) {
-                const x1 = x + (i / data.years) * w;
-                const x2 = x + ((i + 1) / data.years) * w;
-                const y1 = y + h - 10;
-                const y2 = y + h - (annual * 4);
-                doc.setDrawColor(16, 185, 129);
-                doc.setLineWidth(4);
+                const x1 = x + (i/data.years)*w;
+                const x2 = x + ((i+1)/data.years)*w;
+                const y1 = y + h - 15;
+                const y2 = y + h - Math.min(val * 5, h-10);
+                doc.setDrawColor(34, 197, 151);
+                doc.setLineWidth(3);
                 doc.line(x1, y1, x2, y2);
             }
         }
 
-        function drawCumulativeChart(doc, data, x, y, w, h) {
+        function drawCumulative(doc, data, x, y, w, h) {
             doc.rect(x, y, w, h);
-            const annual = data.annualProfit / 1e9;
-            doc.setDrawColor(59, 130, 246);
-            doc.setLineWidth(4);
+            const val = data.annualProfit / 1000000000;
             let prevY = y + h;
             for (let i = 0; i <= data.years; i++) {
-                const currX = x + (i / data.years) * w;
-                const currY = y + h - (annual * i * 0.7);
-                if (i > 0) doc.line(currX - (w/data.years), prevY, currX, currY);
+                const currX = x + (i/data.years)*w;
+                const currY = y + h - Math.min(val * i * 0.8, h-10);
+                if (i > 0) {
+                    doc.setDrawColor(59, 130, 246);
+                    doc.setLineWidth(3);
+                    doc.line(currX - (w/data.years), prevY, currX, currY);
+                }
                 prevY = currY;
             }
         }
 
-        window.onload = () => {
-            loadFonts().then(calculate);
-        };
+        window.onload = calculate;
     </script>
 </body>
 </html>
