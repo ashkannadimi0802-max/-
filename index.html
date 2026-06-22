@@ -193,19 +193,18 @@
                 const result = await response.json();
                 console.log("📡 پاسخ API:", result);
 
-                // شرط بسیار宽 برای تشخیص موفقیت
-                if (response.ok || result.status === "SUCCESS" || result.statusCode === 200 || result.messageId || result.status === 1 || String(result).includes("موفق")) {
+                if (response.ok || result.status === "SUCCESS" || result.statusCode === 200 || result.messageId || result.status === 1) {
                     correctOTP = otpCode;
                     document.getElementById("shownPhone").textContent = "0" + phone;
                     document.getElementById("registerStep1").classList.add("hidden");
                     document.getElementById("registerStep2").classList.remove("hidden");
-                    alert(`✅ کد تأیید به شماره ${"0" + phone} ارسال شد.\n\nکد تست: ${otpCode}`);
+                    alert(`✅ کد تأیید به شماره ${"0" + phone} ارسال شد.`);
                 } else {
-                    alert("خطا در ارسال پیامک:\n" + (result.message || JSON.stringify(result)));
+                    alert("خطا در ارسال پیامک: " + (result.message || "لطفاً دوباره تلاش کنید"));
                 }
             } catch (error) {
                 console.error(error);
-                alert("خطا در اتصال به سرور");
+                alert("خطا در اتصال به سرور پیامک");
             }
         }
 
@@ -235,8 +234,7 @@
             document.getElementById("registerSuccess").classList.add("hidden");
         }
 
-        // بقیه توابع بدون تغییر
-        function calculate() { /* ... همان کد قبلی ... */ 
+        function calculate() {
             const totalProject = 250000000000;
             const totalShares = 1000;
             const maxShares = 300;
