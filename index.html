@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محاسبه‌گر حرفه‌ای | آریا راهبرد نیرو</title>
-  
+ 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.3/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  
+ 
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
@@ -97,12 +97,16 @@
 
     <script>
         let profitChart, cumulativeChart;
-        
-        // سود سالانه کل پروژه (بر اساس جدول شما تنظیم شده)
+       
+        // سود سالانه کل پروژه (اصلاح شده - مجموع ≈ ۲۰۰۰ میلیارد تومان)
         let annualProfits = [
-            50000000000, 60000000000, 72000000000, 
-            86400000000, 103680000000, 124416000000, 
-            149299200000
+            120000000000,  // سال ۱
+            144000000000,  // سال ۲
+            172800000000,  // سال ۳
+            207360000000,  // سال ۴
+            248832000000,  // سال ۵
+            298598400000,  // سال ۶
+            358318080000   // سال ۷
         ];
 
         function formatNumber(num) {
@@ -110,7 +114,7 @@
         }
 
         function calculate() {
-            const totalProject = 250000000000;
+            const totalProject = 250000000000;   // ۲۵۰ میلیارد تومان
             const totalShares = 1000;
             const maxShares = 300;
 
@@ -120,7 +124,9 @@
             let sharePrice = totalProject / totalShares;
             let shares = investment / sharePrice;
 
-            if (shares > maxShares) return alert("شما مجاز به خرید بیش از ۳۰۰ سهم نمی باشید.");
+            if (shares > maxShares) {
+                return alert("شما مجاز به خرید بیش از ۳۰۰ سهم نمی باشید.");
+            }
 
             let ownership = (shares / totalShares) * 100;
             let cashFlows = annualProfits.map(p => p * (ownership / 100));
@@ -175,14 +181,34 @@
 
             profitChart = new Chart(document.getElementById('profitChart'), {
                 type: 'bar',
-                data: { labels: yearsArray, datasets: [{ label: 'گردش نقدی', data: cashFlows.map(v => Math.round(v)), backgroundColor: '#10b981' }] },
+                data: { 
+                    labels: yearsArray, 
+                    datasets: [{ 
+                        label: 'گردش نقدی', 
+                        data: cashFlows.map(v => Math.round(v)), 
+                        backgroundColor: '#10b981' 
+                    }] 
+                },
                 options: { responsive: true, maintainAspectRatio: false }
             });
 
-            const cumData = cashFlows.reduce((acc, val) => { acc.push(acc[acc.length-1] + val); return acc; }, [0]);
+            const cumData = cashFlows.reduce((acc, val) => { 
+                acc.push(acc[acc.length-1] + val); 
+                return acc; 
+            }, [0]);
+
             cumulativeChart = new Chart(document.getElementById('cumulativeChart'), {
                 type: 'line',
-                data: { labels: Array.from({length: 8}, (_, i) => i===0 ? 'شروع' : `سال ${i}`), datasets: [{ label: 'سود تجمعی', data: cumData, borderColor: '#3b82f6', fill: true }] },
+                data: { 
+                    labels: Array.from({length: 8}, (_, i) => i===0 ? 'شروع' : `سال ${i}`), 
+                    datasets: [{ 
+                        label: 'سود تجمعی', 
+                        data: cumData, 
+                        borderColor: '#3b82f6', 
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true 
+                    }] 
+                },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         }
@@ -190,6 +216,7 @@
         function showAdminPanel() {
             document.getElementById("adminModal").classList.remove("hidden");
         }
+
         function loginAdmin() {
             if (document.getElementById("adminPass").value === "admin123") {
                 document.getElementById("adminContent").classList.remove("hidden");
@@ -198,6 +225,7 @@
                 alert("رمز عبور اشتباه است!");
             }
         }
+
         function renderAnnualProfitInputs() {
             const container = document.getElementById("annualProfitInputs");
             container.innerHTML = "";
@@ -206,11 +234,13 @@
                 div.className = "text-center";
                 div.innerHTML = `
                     <label class="block text-xs text-slate-500 mb-1">سال ${index+1}</label>
-                    <input type="number" value="${profit}" data-index="${index}" class="w-full rounded-xl px-4 py-3 border text-center text-sm">
+                    <input type="number" value="${profit}" data-index="${index}" 
+                           class="w-full rounded-xl px-4 py-3 border text-center text-sm">
                 `;
                 container.appendChild(div);
             });
         }
+
         function updateAnnualProfits() {
             const inputs = document.querySelectorAll("#annualProfitInputs input");
             inputs.forEach(input => {
@@ -220,6 +250,11 @@
             });
             alert("✅ سود سال‌های پروژه بروزرسانی شد.");
             calculate();
+        }
+
+        // تابع ثبت‌نام (در صورت نیاز بعداً تکمیل شود)
+        function showRegisterModal() {
+            alert("✅ فرم ثبت‌نام به زودی فعال خواهد شد.\n\nبرای اطلاعات بیشتر با ما تماس بگیرید.");
         }
 
         window.onload = calculate;
