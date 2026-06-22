@@ -129,7 +129,7 @@
         </div>
     </div>
 
-    <!-- Modal ادمین (بدون تغییر) -->
+    <!-- Modal ادمین -->
     <div id="adminModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="glass rounded-3xl p-8 w-full max-w-4xl mx-4 max-h-[90vh] overflow-auto">
             <h3 class="text-2xl font-bold mb-6">پنل مدیریت - ویرایش سود سالانه</h3>
@@ -182,9 +182,6 @@
                 return alert("شما مجاز به خرید بیش از ۳۰۰ سهم نمی باشید.");
             }
 
-            // اینجا می‌توانید بعداً اعتبارسنجی واقعی کد ملی و موبایل را اضافه کنید
-            // فعلاً فقط فرمت چک می‌شود
-
             let phone = phoneInput.replace(/^0/, '');
 
             currentPhone = phone;
@@ -197,7 +194,10 @@
             try {
                 const response = await fetch('https://api.sms.ir/v1/send/verify', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-API-KEY': API_KEY 
+                    },
                     body: JSON.stringify({
                         mobile: phone,
                         templateId: TEMPLATE_ID,
@@ -206,16 +206,17 @@
                 });
 
                 const result = await response.json();
-                console.log("پاسخ API:", result);
+                console.log("🔍 پاسخ کامل API:", result);
 
-                if (response.ok && (result.status === "SUCCESS" || result.statusCode === 200 || result.messageId)) {
+                // شرط بهبود یافته برای تشخیص موفقیت
+                if (response.ok && (result.status === "SUCCESS" || result.statusCode === 200 || result.messageId || result.data || result.status === 1)) {
                     correctOTP = otpCode;
                     document.getElementById("shownPhone").textContent = "0" + phone;
                     document.getElementById("registerStep1").classList.add("hidden");
                     document.getElementById("registerStep2").classList.remove("hidden");
-                    alert(`✅ کد تأیید به شماره ${"0" + phone} ارسال شد.`);
+                    alert(`✅ کد تأیید به شماره ${"0" + phone} ارسال شد.\n\nکد تست: ${otpCode} (برای تست سریع)`);
                 } else {
-                    alert("خطا در ارسال پیامک: " + (result.message || "لطفاً دوباره تلاش کنید"));
+                    alert("خطا در ارسال پیامک:\n" + JSON.stringify(result, null, 2));
                 }
             } catch (error) {
                 console.error(error);
@@ -249,7 +250,7 @@
             document.getElementById("registerSuccess").classList.add("hidden");
         }
 
-        // ==================== بقیه توابع (بدون تغییر) ====================
+        // بقیه توابع بدون هیچ تغییری
         function calculate() {
             const totalProject = 250000000000;
             const totalShares = 1000;
