@@ -271,24 +271,45 @@
             }
         }
 
-        function verifyOTP() {
-            const entered = document.getElementById("otpCode").value.trim();
-            if (entered === correctOTP) {
-                const name = document.getElementById("fullName").value.trim();
-                const phone = document.getElementById("phoneNumber").value.trim();
-                const investment = regInvestmentAmount;
-                const shares = Math.floor(investment / 250000000);
+       async function verifyOTP() {
 
-                registrations.push({ name, phone, investment, shares, date: new Date().toLocaleDateString('fa-IR') });
-                saveRegistrations();
+    const entered = document.getElementById("otpCode").value.trim();
 
-                document.getElementById("registerStep2").classList.add("hidden");
-                document.getElementById("registerSuccess").classList.remove("hidden");
-            } else {
-                alert("کد وارد شده اشتباه است!");
-            }
-        }
+    if (entered !== correctOTP) {
+        alert("کد وارد شده اشتباه است!");
+        return;
+    }
 
+    const name = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phoneNumber").value.trim();
+    const investment = regInvestmentAmount;
+    const shares = Math.floor(investment / 250000000);
+
+    try {
+
+        await fetch("https://script.google.com/macros/s/AKfycbwbhECAcZtyHEwRM_5uahhckNqq9tRIbequUtuWtotbkNoHnfCmF29kN4prdDwWW6mM/exec", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                phone,
+                investment,
+                shares
+            })
+        });
+
+        document.getElementById("registerStep2").classList.add("hidden");
+        document.getElementById("registerSuccess").classList.remove("hidden");
+
+    } catch (error) {
+
+        console.error(error);
+        alert("خطا در ذخیره اطلاعات");
+
+    }
+}
         function backToStep1() {
             document.getElementById("registerStep2").classList.add("hidden");
             document.getElementById("registerStep1").classList.remove("hidden");
